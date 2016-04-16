@@ -123,19 +123,22 @@ public class WordCount extends Configured implements Tool {
             }
         }
 
-        FileInputFormat.setInputPaths(conf, new Path(other_args.get(0)));
-        FileOutputFormat.setOutputPath(conf, new Path(other_args.get(1)));
+        FileInputFormat.setInputPaths(conf, new Path(conf.get("input")));
+        FileOutputFormat.setOutputPath(conf, new Path(conf.get("output")));
 
         JobClient.runJob(conf);
         return 0;
     }
 
     public static void main(String[] args) throws Exception {
-        args = new String[2];
-        args[0]="/Users/sbaron/github/mapreduce/javamr/src/main/resources/input";
-        args[1]="/Users/sbaron/github/mapreduce/javamr/src/main/resources/output/" + new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(System.currentTimeMillis());
+        String inputDir = "/Users/sbaron/github/mapreduce/javamr/src/main/resources/input";
+        String outputDir = "/Users/sbaron/github/mapreduce/javamr/src/main/resources/output/" + new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(System.currentTimeMillis());
 
-        int res = ToolRunner.run(new Configuration(), new WordCount(), args);
+        Configuration conf = new Configuration();
+        conf.set("input", inputDir);
+        conf.set("output", outputDir);
+
+        int res = ToolRunner.run(conf, new WordCount(), args);
         System.exit(res);
     }
 
